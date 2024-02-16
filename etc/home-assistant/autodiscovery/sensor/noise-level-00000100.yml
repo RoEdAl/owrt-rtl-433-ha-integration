@@ -1,0 +1,6 @@
+device:
+  name: Noise level of 00000100 dongle
+device_class: signal_strength
+state_topic: rtl_433/status/noise/00000100
+unit_of_measurement: "\u33c8"
+expire_after: 120

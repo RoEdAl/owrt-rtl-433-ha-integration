@@ -1,0 +1,6 @@
+device:
+  name: Remote Light Switch
+state_topic: "rtl_433/kinetic/lightswitch-basic/state"
+event_types:
+- "on"
+device_class: button

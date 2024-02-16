@@ -1,0 +1,6 @@
+name: D
+state_topic: "rtl_433/remote/ORNO Remote/D/state"
+json_attributes_topic: "rtl_433/remote/ORNO Remote/D/attributes"
+device:
+  name: ORNO Remote
+device_class: plug

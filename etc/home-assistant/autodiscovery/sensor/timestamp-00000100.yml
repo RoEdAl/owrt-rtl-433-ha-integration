@@ -1,0 +1,6 @@
+device:
+  name: Timestamp of 00000100 dongle
+device_class: timestamp
+state_topic: rtl_433/status/timestamp/00000100
+value_template: '{{ as_datetime(value) }}'
+expire_after: 120

@@ -1,0 +1,12 @@
+#
+# Restart rtl-* services
+#
+
+#logger -t ntp $(env)
+
+[ "$ACTION" = 'stratum' -o "$ACTION" = 'step' ] || exit 0
+[ "$stratum" -ge 16 ] && exit 0
+
+logger -s -t ntp Restarting rtl_433 services [stratum: $stratum]
+/etc/init.d/rtl-433 enabled && /etc/init.d/rtl-433 restart
+/etc/init.d/rtl-866 enabled && /etc/init.d/rtl-866 restart
