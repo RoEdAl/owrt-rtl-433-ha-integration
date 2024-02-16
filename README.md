@@ -1,4 +1,4 @@
-# Integration of [rtl_433](http://triq.org/rtl_433) with [Home Assistant](http://design.home-assistant.io) based on [OpenWRT](http://openwrt.org) operating system
+# Integration of [rtl_433](http://triq.org/rtl_433) with [Home Assistant](http://home-assistant.io) based on [OpenWRT](http://openwrt.org) operating system
 
 ## Hardware
 
