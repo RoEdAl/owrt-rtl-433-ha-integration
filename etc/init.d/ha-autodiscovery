@@ -9,7 +9,7 @@ readonly SCRIPT=/usr/lib/rtl-433/ha-autodiscovery.sh
 start_service() {
 	procd_open_instance
 	procd_set_param command /usr/bin/socat -U 
-	procd_append_param command "EXEC:'/usr/bin/mosquitto_pub $MQTT_AUTH -V 5 -x 86400 --property publish message-expiry-interval 300 -l -t mqtt/publish',pipes"
+	procd_append_param command "EXEC:'mosquitto_pub $MQTT_AUTH -V 5 -x 86400 --property publish message-expiry-interval 300 -l -t mqtt/publish',pipes"
 	procd_append_param command EXEC:$SCRIPT,nofork,pipes
 	procd_set_param stderr 1
 	procd_set_param stdout 1
