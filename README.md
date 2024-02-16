@@ -3,7 +3,11 @@
 ## Hardware
 
 * Two cheap **RTL2832U**-based dongles.
-* [A10-OLinuXino-LIME](http://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME-n4GB/open-source-hardware) board from *Olimex*.
+
+  Use `rtl_eeprom` tool to set different serial numbers of your dongles if nessesary.\
+  Here `00000100` and `00000101` ones are used.
+
+* [A10-OLinuXino-LIME](http://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME-n4GB/open-source-hardware) SBC from *Olimex*.
 
 ## Software
 
