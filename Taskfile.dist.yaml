@@ -1,0 +1,181 @@
+version: '3'
+
+tasks:
+  install-hotplug-usb:
+    run: once
+    cmds:
+      - mkdir -p /etc/hotplug.d/usb
+      - cp etc/hotplug.d/usb/50-rtl-sdr /etc/hotplug.d/usb
+
+  install-hotplug-ntp:
+    run: once
+    cmds:
+      - mkdir -p /etc/hotplug.d/ntp
+      - cp etc/hotplug.d/ntp/50-rtl-433 /etc/hotplug.d/ntp
+
+  opkg-update:
+    run: once
+    cmds:
+      - opkg update
+
+  opkg-install-socat:
+    run: once
+    deps:
+      - opkg-update
+    cmds:
+      - opkg install socat
+
+  opkg-install-rtl_433:
+    run: once
+    deps:
+      - opkg-update
+    cmds:
+      - opkg install rtl_433
+
+  opkg-install-mosquitto-server:
+    run: once
+    deps:
+      - opkg-update
+    cmds:
+      - opkg install mosquitto-nossl
+
+  opkg-install-mosquitto-client:
+    run: once
+    deps:
+      - opkg-update
+    cmds:
+      - opkg install mosquitto-client-nossl
+
+  opkg-install-jq:
+    run: once
+    deps:
+      - opkg-update
+    cmds:
+      - opkg install jq
+
+  opkg-install-yq:
+    run: once
+    deps:
+      - opkg-update
+    cmds:
+      - opkg install yq
+
+  install-mosquitto-local:
+    summary: |
+      Install local-only Mosquitto server.
+
+      Communication via UNIX socket only.
+    run: once
+    cmds:
+      - task: opkg-install-mosquitto-server
+      - cp etc/init.d/mosquitto-local /etc/init.d
+      - cp etc/mosquitto/mosquitto-local.conf /etc/mosquitto
+      - service mosquitto-local enable
+
+  mkdir-rtl-433:
+    run: once
+    internal: true
+    cmds:
+      - mkdir -p /usr/lib/rtl-433
+
+  install-mqtt-publisher:
+    desc: Install MQTT publisher service
+    run: once
+    deps:
+      - mkdir-rtl-433
+    cmds:
+      - task: opkg-install-socat
+      - task: install-mosquitto-local
+      - task: opkg-install-mosquitto-client
+      - task: opkg-install-jq
+      - cp usr/lib/rtl-433/mqtt-publisher.sh /usr/lib/rtl-433
+      - cp usr/lib/rtl-433/mqtt-publisher.jq /usr/lib/rtl-433
+      - cp etc/init.d/mqtt-publisher /etc/init.d
+      - service mqtt-publisher enable
+
+  install-rtl-433-processor:
+    desc: Install rtl_433 output (JSON) processor service
+    run: once
+    deps:
+      - mkdir-rtl-433
+    cmds:
+      - task: opkg-install-socat
+      - task: install-mosquitto-local
+      - task: install-mqtt-publisher
+      - task: opkg-install-jq
+      - cp usr/lib/rtl-433/rtl-433-processor.jq /usr/lib/rtl-433
+      - cp etc/init.d/rtl-433-processor /etc/init.d
+      - service rtl-433-processor enable
+
+  install-rtl-433-services:
+    desc: Install rtl_433 services
+    run: once
+    deps:
+      - install-hotplug-usb
+      - install-hotplug-ntp
+    cmds:
+      - task: opkg-install-socat
+      - task: opkg-install-rtl_433
+      - task: install-rtl-433-processor
+      - cp usr/lib/rtl-433/rtl-433.conf /usr/lib/rtl-433
+      - cp usr/lib/rtl-433/rtl-866.conf /usr/lib/rtl-433
+      - mkdir -p /etc/rtl-433
+      - ln -s ../../usr/lib/rtl-433/rtl-433.conf /etc/rtl-433/rtl-00000101.conf
+      - ln -s ../../usr/lib/rtl-433/rtl-866.conf /etc/rtl-433/rtl-00000100.conf
+      - cp usr/lib/rtl-433/svc.sh /usr/lib/rtl-433
+      - cp etc/init.d/rtl-433 /etc/init.d
+      - cp etc/init.d/rtl-866 /etc/init.d
+      - service rtl-433 enable
+      - service rtl-866 enable
+
+  install-ha-autodiscovery:
+    desc: Install ha-autodiscovery service
+    run: once
+    cmds:
+      - task: opkg-install-socat
+      - task: install-mqtt-publisher
+      - task: opkg-install-yq
+      - mkdir -p /etc/home-assistant
+      - cp -r etc/home-assistant/autodiscovery /etc/home-assistant
+      - cp usr/lib/rtl-433/ha-autodiscovery.sh /usr/lib/rtl-433
+      - cp usr/lib/rtl-433/ha-autodiscovery.yq /usr/lib/rtl-433
+      - cp etc/init.d/ha-autodiscovery /etc/init.d
+      - service ha-autodiscovery enable
+
+  install-rtl-433:
+    desc: Install all nessessary components
+    cmds:
+      - task: install-rtl-433-services
+      - task: install-ha-autodiscovery
+    aliases:
+      - default
+
+  monitor-output:
+    desc: Monitor rtl_433 JSON output
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5--unix /tmp/mosquitto.sock -t rtl_433/output/# -F '%t\t%p'
+
+  monitor-mosquitto:
+    desc: Monitor Mosquitto server
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t '$SYS/broker/log/#' -F '%t\t%p'
+
+  monitor-bridge:
+    desc: Monitor Mosquitto bridge to HA
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t  '$SYS/broker/connection/#' -F '%t\t%p'
+
+  monitor-ha:
+    desc: Monitor Home Assistant messages
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t mqtt/publish --pretty
+
+  monitor-ha-deep:
+    desc: Monitor Home Assistant messages deeply
+    interactive: true
+    cmds:
+      - mosquitto_sub --unix /tmp/mosquitto.sock -t rtl_433/ha/# -F '%t\t%p' -R
