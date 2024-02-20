@@ -69,7 +69,6 @@ case ${1:-service} in
 
     service)
     mosquitto_sub -V 5 --unix /tmp/mosquitto.sock \
-        -x 86400 \
 	-t 'homeassistant/status' \
         -t '$SYS/broker/connection/+/state' \
 	-F '%t\t%p' | while IFS=$'\t' read -r topic payload
