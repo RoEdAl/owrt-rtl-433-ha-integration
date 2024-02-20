@@ -195,3 +195,10 @@ tasks:
     interactive: true
     cmds:
       - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t rtl_433/ha/# -F '%t\t%p' -R
+
+  archive:
+    desc: Create archive tarball
+    preconditions:
+      - test -d .git
+    cmds:
+      - git archive --format=tar -o rtl-433-ha-integration.tar HEAD
