@@ -34,7 +34,7 @@ start_rtl_433_service() {
 	procd_open_instance
 	procd_set_param env DEVSN=$DEVSN
 	procd_set_param command /usr/bin/socat -U
-	procd_append_param command "EXEC:'mosquitto_pub --unix $MQTT_SOCKET -V 5 --property publish message-expiry-interval 300 -l -t rtl_433/output/$DEVSN',pipes"
+	procd_append_param command "EXEC:'mosquitto_pub --unix $MQTT_SOCKET -V 5 --property publish message-expiry-interval 300 --property publish payload-format-indicator 1 --property publish content-type application/json -l -t rtl_433/output/$DEVSN',pipes"
 	procd_append_param command "EXEC:'rtl_433 -c $CONF_FILE',nofork,pipes"
 	procd_set_param stderr 1
 	procd_set_param respawn 3600 10 0
