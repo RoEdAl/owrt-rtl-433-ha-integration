@@ -60,6 +60,13 @@ tasks:
     cmds:
       - opkg install yq
 
+  opkg-install-shadow-groupadd:
+    run: once
+    deps:
+      - opkg-update
+    cmds:
+      - opkg install shadow-groupadd
+
   install-mosquitto-local:
     summary: |
       Install local-only Mosquitto server.
@@ -107,12 +114,21 @@ tasks:
       - cp etc/init.d/rtl-433-processor /etc/init.d
       - service rtl-433-processor enable
 
+  add-group-plugdev:
+    desc: Add plugdev system group
+    run: once
+    deps:
+      - opkg-install-shadow-groupadd
+    cmds:
+      - groupadd -r -f plugdev
+
   install-rtl-433-services:
     desc: Install rtl_433 services
     run: once
     deps:
       - install-hotplug-usb
       - install-hotplug-ntp
+      - add-group-plugdev
     cmds:
       - task: opkg-install-socat
       - task: opkg-install-rtl_433
