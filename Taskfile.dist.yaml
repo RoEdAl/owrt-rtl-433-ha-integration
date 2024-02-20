@@ -166,7 +166,7 @@ tasks:
     desc: Monitor Mosquitto bridge to HA
     interactive: true
     cmds:
-      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t  '$SYS/broker/connection/#' -F '%t\t%p'
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t  '$SYS/broker/connection/+/state' -F '%t\t%p'
 
   monitor-ha:
     desc: Monitor Home Assistant messages
@@ -178,4 +178,4 @@ tasks:
     desc: Monitor Home Assistant messages deeply
     interactive: true
     cmds:
-      - mosquitto_sub --unix /tmp/mosquitto.sock -t rtl_433/ha/# -F '%t\t%p' -R
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t rtl_433/ha/# -F '%t\t%p' -R

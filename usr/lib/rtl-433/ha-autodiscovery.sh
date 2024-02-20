@@ -53,7 +53,7 @@ process_mqtt_event() {
             send_autodiscovery_entities $RETAIN
         fi;;
 
-        \$SYS/broker/connection/owrt-rtl433.homeassistant/state)
+        \$SYS/broker/connection/*/state)
         echoerr '[HA Autodiscovery]' Connection State: $2
         if [ "$2" = '1' ]; then
             echoerr '[HA Autodiscovery]' Sending autodiscovery entities
@@ -71,7 +71,7 @@ case ${1:-service} in
     mosquitto_sub -V 5 --unix /tmp/mosquitto.sock \
         -x 86400 \
 	-t 'homeassistant/status' \
-        -t '$SYS/broker/connection/owrt-rtl433.homeassistant/state' \
+        -t '$SYS/broker/connection/+/state' \
 	-F '%t\t%p' | while IFS=$'\t' read -r topic payload
     do
         process_mqtt_event $topic $payload
