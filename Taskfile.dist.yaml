@@ -1,6 +1,16 @@
 version: '3'
+output: prefixed
 
 tasks:
+  install-service:
+    internal: true
+    requures:
+      - SERVICE
+    label: install-service-{{.SERVICE}}
+    cmds:
+      - cp etc/init.d/{{.SERVICE}} /etc/init.d
+      - service {{.SERVICE}} enable
+    
   opkg-update:
     run: once
     cmds:
@@ -8,6 +18,8 @@ tasks:
 
   opkg-install-socat:
     run: once
+    status:
+      - command -v socat
     deps:
       - opkg-update
     cmds:
@@ -15,6 +27,8 @@ tasks:
 
   opkg-install-rtl_433:
     run: once
+    status:
+      - command -v rtl_433
     deps:
       - opkg-update
     cmds:
@@ -22,6 +36,8 @@ tasks:
 
   opkg-install-mosquitto-server:
     run: once
+    status:
+      - command -v mosquitto
     deps:
       - opkg-update
     cmds:
@@ -29,6 +45,9 @@ tasks:
 
   opkg-install-mosquitto-client:
     run: once
+    status:
+      - command -v mosquitto_sub
+      - command -v mosquitto_pub
     deps:
       - opkg-update
     cmds:
@@ -36,6 +55,8 @@ tasks:
 
   opkg-install-jq:
     run: once
+    status:
+      - command -v jq
     deps:
       - opkg-update
     cmds:
@@ -43,6 +64,8 @@ tasks:
 
   opkg-install-yq:
     run: once
+    status:
+      - command -v yq
     deps:
       - opkg-update
     cmds:
@@ -50,6 +73,8 @@ tasks:
 
   opkg-install-shadow-groupadd:
     run: once
+    status:
+      - command -v groupadd
     deps:
       - opkg-update
     cmds:
@@ -85,13 +110,16 @@ tasks:
     run: once
     cmds:
       - task: opkg-install-mosquitto-server
-      - cp etc/init.d/mosquitto-local /etc/init.d
       - cp etc/mosquitto/mosquitto-local.conf /etc/mosquitto
-      - service mosquitto-local enable
+      - task: install-service
+        vars: 
+          SERVICE: mosquitto-local
 
   mkdir-rtl-433:
     run: once
     internal: true
+    status:
+      - test -d /usr/lib/rtl-433
     cmds:
       - mkdir -p /usr/lib/rtl-433
 
@@ -107,8 +135,9 @@ tasks:
       - task: opkg-install-jq
       - cp usr/lib/rtl-433/mqtt-publisher.sh /usr/lib/rtl-433
       - cp usr/lib/rtl-433/mqtt-publisher.jq /usr/lib/rtl-433
-      - cp etc/init.d/mqtt-publisher /etc/init.d
-      - service mqtt-publisher enable
+      - task: install-service
+        vars:
+          SERVICE: mqtt-publisher
 
   install-rtl-433-processor:
     desc: Install rtl_433 output (JSON) processor service
@@ -121,8 +150,9 @@ tasks:
       - task: install-mqtt-publisher
       - task: opkg-install-jq
       - cp usr/lib/rtl-433/rtl-433-processor.jq /usr/lib/rtl-433
-      - cp etc/init.d/rtl-433-processor /etc/init.d
-      - service rtl-433-processor enable
+      - task: install-service
+        vars:
+          SERVICE: rtl-433-processor
 
   install-rtl-433-services:
     desc: Install rtl_433 services
@@ -140,10 +170,12 @@ tasks:
       - ln -s ../../usr/lib/rtl-433/rtl-433.conf /etc/rtl-433/rtl-00000101.conf
       - ln -s ../../usr/lib/rtl-433/rtl-866.conf /etc/rtl-433/rtl-00000100.conf
       - cp usr/lib/rtl-433/svc.sh /usr/lib/rtl-433
-      - cp etc/init.d/rtl-433 /etc/init.d
-      - cp etc/init.d/rtl-866 /etc/init.d
-      - service rtl-433 enable
-      - service rtl-866 enable
+      - task: install-service
+        vars:
+          SERVICE: rtl-433
+      - task: install-service
+        vars:
+          SERVICE: rtl-866
 
   install-ha-autodiscovery:
     desc: Install ha-autodiscovery service
@@ -156,8 +188,9 @@ tasks:
       - cp -r etc/home-assistant/autodiscovery /etc/home-assistant
       - cp usr/lib/rtl-433/ha-autodiscovery.sh /usr/lib/rtl-433
       - cp usr/lib/rtl-433/ha-autodiscovery.yq /usr/lib/rtl-433
-      - cp etc/init.d/ha-autodiscovery /etc/init.d
-      - service ha-autodiscovery enable
+      - task: install-service
+        vars:
+          SERVICE: ha-autodiscovery
 
   install-rtl-433:
     desc: Install all nessessary components
