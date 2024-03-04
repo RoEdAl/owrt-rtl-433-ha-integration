@@ -56,3 +56,10 @@ tasks:
       - task: orno-remote      
       - task: heckermann-433-pir-sensor-2
 
+  scan-433:
+    cmds:
+      - rtl_433 -c rtl-433.conf -F json | jq --unbuffered -n inputs
+
+  scan-866:
+    cmds:
+      - rtl_433 -c rtl-866.conf -F json | jq --unbuffered -n inputs
