@@ -1,0 +1,58 @@
+version: '3'
+
+tasks:
+  rtl-433:
+    internal: true
+    requures:
+      - MODEL
+      - OOKFILE
+    label: rtl-433-{{.MODEL}}
+    cmds:
+      - rtl_433 -c {{.MODEL}}/{{.MODEL}}.conf -F json -M protocol -r {{.MODEL}}/{{.MODEL}}-{{.OOKFILE}}.ook 2>/dev/null | jq
+
+  vauno_en8822c:
+    cmds:
+      - task: rtl-433
+        vars:
+          MODEL: vauno_en8822c
+          OOKFILE: 1
+
+  lightswitch-basic:
+    cmds:
+      - for: [1, 2]
+        task: rtl-433
+        vars:
+          MODEL: lightswitch-basic
+          OOKFILE: '{{.ITEM}}'
+
+  orno-remote-doorbell-button:
+    cmds:
+      - for: [1, 2]
+        task: rtl-433
+        vars:
+          MODEL: orno-remote-doorbell-button
+          OOKFILE: '{{.ITEM}}'
+
+  heckermann-433-pir-sensor-2:
+    cmds:
+      - task: rtl-433
+        vars:
+          MODEL: heckermann-433-pir-sensor-2
+          OOKFILE: 1
+
+  orno-remote:
+    cmds:
+      - for: [a-on, a-off, b-on, b-off, c-on, c-off, d-on, d-off, e-on, e-off]
+        task: rtl-433
+        vars:
+          MODEL: orno-remote
+          OOKFILE: '{{.ITEM}}'
+
+  default:
+    cmds:
+      - task: vauno_en8822c
+      - task: lightswitch-basic
+      - task: orno-remote-doorbell-button
+      - task: orno-remote      
+      - task: heckermann-433-pir-sensor-2
+
