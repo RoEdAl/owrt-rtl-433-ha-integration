@@ -1,6 +1,6 @@
 device:
   name: Remote Light Switch
-state_topic: "rtl_433/kinetic/lightswitch-basic/state"
+state_topic: "rtl_433/kinetic/Lightswitch Basic/fc975e8/state"
 event_types:
 - "on"
 device_class: button

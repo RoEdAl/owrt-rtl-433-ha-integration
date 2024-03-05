@@ -11,6 +11,7 @@ tasks:
       - rtl_433 -c {{.MODEL}}/{{.MODEL}}.conf -F json -M protocol -r {{.MODEL}}/{{.MODEL}}-{{.OOKFILE}}.ook 2>/dev/null | jq
 
   vauno_en8822c:
+    desc: Test Vauno EN8822C
     cmds:
       - task: rtl-433
         vars:
@@ -18,6 +19,7 @@ tasks:
           OOKFILE: 1
 
   lightswitch-basic:
+    desc: Test Lightswitch Basic
     cmds:
       - for: [1, 2]
         task: rtl-433
@@ -26,6 +28,7 @@ tasks:
           OOKFILE: '{{.ITEM}}'
 
   orno-remote-doorbell-button:
+    desc: Test ORNO Remote Doorbell Button
     cmds:
       - for: [1, 2]
         task: rtl-433
@@ -34,6 +37,9 @@ tasks:
           OOKFILE: '{{.ITEM}}'
 
   heckermann-433-pir-sensor-2:
+    desc: Test Heckermann 433MHz PIR Sensor 2
+    aliases:
+      - pir-sensor
     cmds:
       - task: rtl-433
         vars:
@@ -41,6 +47,7 @@ tasks:
           OOKFILE: 1
 
   orno-remote:
+    desc: Test ORNO Remote with five ON/OFF buttons
     cmds:
       - for: [a-on, a-off, b-on, b-off, c-on, c-off, d-on, d-off, e-on, e-off]
         task: rtl-433
@@ -49,6 +56,7 @@ tasks:
           OOKFILE: '{{.ITEM}}'
 
   default:
+    desc: Test all
     cmds:
       - task: vauno_en8822c
       - task: lightswitch-basic
@@ -57,9 +65,13 @@ tasks:
       - task: heckermann-433-pir-sensor-2
 
   scan-433:
+    desc: Scan @ 433MHz
+    interactive: true
     cmds:
       - rtl_433 -c rtl-433.conf -F json | jq --unbuffered -n inputs
 
   scan-866:
+    desc: Scan @ 868MHz
+    interactive: true
     cmds:
       - rtl_433 -c rtl-866.conf -F json | jq --unbuffered -n inputs

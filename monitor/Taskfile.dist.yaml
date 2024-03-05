@@ -1,0 +1,47 @@
+version: '3'
+
+tasks:
+  check-unix-socket:
+    internal: true
+    preconditions:
+      - test -S /tmp/mosquitto.sock
+
+  rtl-output:
+    deps:
+      - check-unix-socket
+    desc: Monitor rtl_433 JSON output
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t rtl_433/output/# -F '%t\t%p'
+
+  mosquitto:
+    deps:
+      - check-unix-socket
+    desc: Monitor Mosquitto server
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t '$SYS/broker/log/#' -F '%t\t%p'
+
+  mosquitto-ha-bridge:
+    deps:
+      - check-unix-socket
+    desc: Monitor Mosquitto bridge to HA
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t  '$SYS/broker/connection/+/state' -F '%t\t%p'
+
+  ha:
+    deps:
+      - check-unix-socket
+    desc: Monitor Home Assistant messages
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t mqtt/publish --pretty
+
+  ha-deep:
+    deps:
+      - check-unix-socket
+    desc: Monitor Home Assistant messages deeply
+    interactive: true
+    cmds:
+      - mosquitto_sub -V 5 --unix /tmp/mosquitto.sock -t rtl_433/ha/# -F '%t\t%p' -R

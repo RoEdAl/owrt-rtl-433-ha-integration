@@ -1,0 +1,18 @@
+version: '3'
+
+includes:
+  monitor: monitor
+  rtl-433:
+    taskfile: rtl_433
+    dir: rtl_433
+  ha-integration:
+    taskfile: ha-integration
+    dir: ha-integration
+
+tasks:
+  archive:
+    desc: Create archive tarball
+    preconditions:
+      - test -d .git
+    cmds:
+      - git archive --format=tar -o rtl-433-ha-integration.tar HEAD

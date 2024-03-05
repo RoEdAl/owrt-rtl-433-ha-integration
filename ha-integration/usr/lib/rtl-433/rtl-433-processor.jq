@@ -2,13 +2,9 @@
 # process input from rtl_433
 #
 
-def is_kinetic_button($m): [
-		"doorbell-primary",
-		"doorbell-secondary"
-	] | index($m);
-
+def is_kinetic_button($m): ["doorbell-primary",	"doorbell-secondary"] | index($m);
 def is_basic_light_switch($m): ["lightswitch-basic"] | index($m);
-
+def is_motion_detector($m): ["Heckermann PIR Sensor 2"] | index($m);
 def is_on_off($b): [ "ON", "OFF" ] | index($b);
 def is_valid_button($b): ["A", "B", "C", "D", "E"] | index($b);
 
@@ -31,13 +27,17 @@ inputs
             {retain: true, topic: "sensor/\(.model)/\(.id)/humidity", payload: .humidity}
           else empty end
 		, {topic: "sensor/\(.model)/\(.id)/attributes", payload: $a}
-	  elif has("model") and is_kinetic_button(.model) then
+	  elif has("model") and has("data") and  is_kinetic_button(.model) then
 		  {snr: .snr, noise: .noise, freq: .freq} as $a
-		| {topic: "kinetic/\(.model)/state", payload: "ON"}
-        , {topic: "kinetic/\(.model)/attributes", payload: $a}
-	  elif has("model") and is_basic_light_switch(.model) then
-		  {event_type: "on", rtl_sn: env.RTLSN, snr: .snr, noise: .noise, freq: .freq} as $s
-		| {topic: "kinetic/\(.model)/state", payload: $s}
+		| {topic: "kinetic/\(.model)/\(.data)/state", payload: "ON"}
+        , {topic: "kinetic/\(.model)/\(.data)/attributes", payload: $a}
+      elif has("model") and has("data") and is_motion_detector(.model) then
+		  {snr: .snr, noise: .noise, freq: .freq} as $a
+		| {topic: "motion/\(.model)/\(.data)/state", payload: "ON"}
+		, {topic: "motion/\(.model)/\(.data)/attributes", payload: $a}
+	  elif has("model") and has("data") and is_basic_light_switch(.model) then
+		  {event_type: "on", snr: .snr, noise: .noise, freq: .freq} as $s
+		| {topic: "kinetic/\(.model)/\(.data)/state", payload: $s}
 	  elif has("stats") then
 	      {topic: "stats/\($rtlsn)", payload: .}
 	  else

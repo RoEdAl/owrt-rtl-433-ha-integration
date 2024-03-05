@@ -17,17 +17,21 @@ start_rtl_433_service() {
 		return 1
 	fi
 
-	readonly CONF_FILE=/etc/rtl-433/rtl-$DEVSN.conf
-	# this file should be created by 50-rtl-sdr USB hotplug script
-	readonly DEV_FILE=/tmp/rtl-sdr/$DEVSN/dev
-
-	if [ ! -f $DEV_FILE ]; then
-		echoerr Unable to find RTL-SDR device with serial number $DEVSN
+	readonly FREQ=$2
+	if [ -z "$FREQ" ]; then
+		echoerr Frequency not specified
+		return 1
+	fi
+	readonly CONF_FILE=/usr/lib/rtl-433/rtl-$FREQ.conf
+	if [ ! -f $CONF_FILE ]; then
+		echoerr Configuration file $CONF_FILE not found
 		return 1
 	fi
 
-	if [ ! -f $CONF_FILE ]; then
-		echoerr Configuration file $CONF_FILE not found
+	# this file should be created by 50-rtl-sdr USB hotplug script
+	readonly DEV_FILE=/tmp/rtl-sdr/$DEVSN/dev
+	if [ ! -f $DEV_FILE ]; then
+		echoerr Unable to find RTL-SDR device with serial number $DEVSN
 		return 1
 	fi
 
@@ -46,7 +50,7 @@ start_rtl_433_service() {
 	procd_add_jail rtl-$DEVSN
 	procd_add_jail_mount /usr/bin/mosquitto_pub
 	procd_add_jail_mount /usr/bin/rtl_433
-	procd_add_jail_mount $(cat $DEV_FILE)
+	procd_add_jail_mount_rw $(cat $DEV_FILE)
 	procd_add_jail_mount /tmp
 	procd_add_jail_mount_rw $MQTT_SOCKET
 	procd_add_jail_mount $CONF_FILE
