@@ -31,7 +31,7 @@ start_rtl_433_service() {
 	# this file should be created by 50-rtl-sdr USB hotplug script
 	readonly DEV_FILE=/tmp/rtl-sdr/$DEVSN/dev
 	if [ ! -f $DEV_FILE ]; then
-		echoerr Unable to find RTL-SDR device with serial number $DEVSN
+		echoerr Device with serial number $DEVSN not found
 		return 1
 	fi
 
@@ -54,5 +54,6 @@ start_rtl_433_service() {
 	procd_add_jail_mount /tmp
 	procd_add_jail_mount_rw $MQTT_SOCKET
 	procd_add_jail_mount $CONF_FILE
+	procd_add_jail_mount /usr/lib/rtl-433/flex
 	procd_close_instance
 }
