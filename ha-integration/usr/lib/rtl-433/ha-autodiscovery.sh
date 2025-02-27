@@ -1,6 +1,7 @@
 #!/bin/ash -e
 
-readonly YQ_SCRIPT=/usr/lib/rtl-433/ha-autodiscovery.yq
+readonly YQ_SCRIPT_SINGLE=/usr/lib/rtl-433/ha-autodiscovery-single.yq
+readonly YQ_SCRIPT_GROUP=/usr/lib/rtl-433/ha-autodiscovery-group.yq
 cd /etc/home-assistant
 
 echoerr() { echo "$@" 1>&2; }
@@ -14,13 +15,13 @@ send_autodiscovery_entities() {
             for f in $(find $g -type f -name '*.yml' -maxdepth 1); do
                 fwe=${f%.yml}
                 OBJECT_ID=$(basename $fwe)
-                env COMPONENT=$COMPONENT GROUP_ID=$GROUP_ID OBJECT_ID=$OBJECT_ID yq --from-file=$YQ_SCRIPT -I 0 -o json $f
+                env COMPONENT=$COMPONENT GROUP_ID=$GROUP_ID OBJECT_ID=$OBJECT_ID yq --from-file=$YQ_SCRIPT_GROUP -I 0 -o json $f
             done
         done
         for f in $(find $d -type f -name '*.yml' -maxdepth 1); do
             fwe=${f%.yml}
             OBJECT_ID=$(basename $fwe)
-            env -u GROUP_ID COMPONENT=$COMPONENT OBJECT_ID=$OBJECT_ID yq --from-file=$YQ_SCRIPT -I 0 -o json $f
+            env -u GROUP_ID COMPONENT=$COMPONENT OBJECT_ID=$OBJECT_ID yq --from-file=$YQ_SCRIPT_SINGLE -I 0 -o json $f
         done
     done
 }
@@ -33,7 +34,7 @@ clear_autodiscovery_entities() {
             for f in $(find $g -type f -name '*.yml' -maxdepth 1); do
                 fwe=${f%.yml}
                 OBJECT_ID=$(basename $fwe)
-                echo -e "$1\thomeassistant/$COMPONENT/rtl_433/$OBJECT_ID/config\t$PAYLOAD"
+                echo -e "$1\thomeassistant/$COMPONENT/rtl_433/${GROUP_ID}_${OBJECT_ID}/config\t$PAYLOAD"
             done
         done
         for f in $(find $d -type f -name '*.yml' -maxdepth 1); do
@@ -53,7 +54,7 @@ process_mqtt_event() {
             send_autodiscovery_entities $RETAIN
         fi;;
 
-        \$SYS/broker/connection/*/state)
+        \$SYS/broker/connection/owrt-rtl433/state)
         echoerr '[HA Autodiscovery]' Connection State: $2
         if [ "$2" = '1' ]; then
             echoerr '[HA Autodiscovery]' Sending autodiscovery entities
@@ -69,8 +70,9 @@ case ${1:-service} in
 
     service)
     mosquitto_sub -V 5 --unix /tmp/mosquitto.sock \
+        -x 86400 \
 	-t 'homeassistant/status' \
-        -t '$SYS/broker/connection/+/state' \
+        -t '$SYS/broker/connection/owrt-rtl433/state' \
 	-F '%t\t%p' | while IFS=$'\t' read -r topic payload
     do
         process_mqtt_event $topic $payload

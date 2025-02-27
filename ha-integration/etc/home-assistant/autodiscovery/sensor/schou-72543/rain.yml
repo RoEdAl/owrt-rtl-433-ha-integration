@@ -1,0 +1,7 @@
+device_class: precipitation
+device:
+  name: Schou 72543
+state_topic: rtl_433/sensor/Schou-72543/8087/rain
+unit_of_measurement: mm
+state_class: total_increasing
+expire_after: 300

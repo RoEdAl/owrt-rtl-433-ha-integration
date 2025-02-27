@@ -1,0 +1,9 @@
+name: Noise
+device:
+  name: Schou 72543
+device_class: signal_strength
+entity_category: diagnostic
+state_topic: rtl_433/sensor/Schou-72543/8087/noise
+unit_of_measurement: dB
+expire_after: 300
+state_class: measurement

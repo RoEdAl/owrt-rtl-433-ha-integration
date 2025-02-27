@@ -1,0 +1,9 @@
+name: Noise
+device:
+  name: Roman's Bedroom 3
+device_class: signal_strength
+entity_category: diagnostic
+state_topic: rtl_433/sensor/LaCrosse-TX29IT/27/noise
+unit_of_measurement: dB
+expire_after: 120
+state_class: measurement

@@ -1,0 +1,7 @@
+device:
+  name: Sitting Room
+device_class: timestamp
+state_topic: rtl_433/sensor/LaCrosse-TX29IT/6/timestamp
+value_template: '{{ as_datetime(value) }}'
+entity_category: diagnostic
+expire_after: 120

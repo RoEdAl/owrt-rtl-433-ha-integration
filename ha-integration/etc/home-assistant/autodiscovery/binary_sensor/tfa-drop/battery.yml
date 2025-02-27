@@ -1,0 +1,8 @@
+device_class: battery
+entity_category: diagnostic
+device:
+  name: TFA Drop Rain
+state_topic: rtl_433/sensor/TFA-Drop/576593/battery
+payload_on: 0
+payload_off: 1
+expire_after: 300

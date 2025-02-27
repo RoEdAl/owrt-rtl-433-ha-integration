@@ -1,0 +1,10 @@
+device_class: data_size
+unit_of_measurement: B
+name: Free memory
+device:
+  name: RTL-433
+state_topic: collectd/owrt-rtl433/memory/memory-free
+value_template: |-                        
+  {% set v = value.rstrip('\x00').split(':') %}
+  {{ v[1] | int }}
+state_class: measurement

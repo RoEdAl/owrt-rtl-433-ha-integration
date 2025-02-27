@@ -1,0 +1,7 @@
+device_class: door
+device:
+  name: Door Sensor 01
+state_topic: rtl_433/generic-remote/30581/cmd
+json_attributes_topic: rtl_433/generic-remote/30581/attributes
+payload_on: 10
+payload_off: 14

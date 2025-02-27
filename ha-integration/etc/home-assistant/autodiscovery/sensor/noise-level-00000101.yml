@@ -2,5 +2,6 @@ device:
   name: Noise level of 00000101 dongle
 device_class: signal_strength
 state_topic: rtl_433/status/noise/00000101
-unit_of_measurement: "\u33c8"
+unit_of_measurement: dB
 expire_after: 120
+state_class: measurement

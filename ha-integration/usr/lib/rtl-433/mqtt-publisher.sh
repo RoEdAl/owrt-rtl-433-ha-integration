@@ -2,21 +2,15 @@
 
 echoerr() { echo "$@" 1>&2; }
 
-readonly MQTT_AUTH='--unix /tmp/mosquitto.sock'
-readonly JQ_SCRIPT=/usr/lib/rtl-433/mqtt-publisher.jq
-readonly PUB_OPTS='-V 5 --property publish message-expiry-interval 3600'
+MQTT_AUTH='["--unix", "/tmp/mosquitto.sock"]'
+PUB_OPTS='["-V", 5, "--property", "publish", "message-expiry-interval", 3600]'
+JQ_SCRIPT=/usr/lib/rtl-433/mqtt-publisher.jq
 
-jq --unbuffered -n -r -f $JQ_SCRIPT | while IFS=$'\t' read -r MQTT_TOPIC MQTT_PAYLOAD MQTT_RETAIN
+jq --argjson pubopts "$PUB_OPTS" --argjson auth "$MQTT_AUTH" --unbuffered -n -r -f $JQ_SCRIPT | while IFS=$'' read -r PUBCMD
 do
-    if [ -z "$MQTT_PAYLOAD" ]; then
-        if ! mosquitto_pub $PUB_OPTS $MQTT_AUTH -t "$MQTT_TOPIC" -n $MQTT_RETAIN
-        then
-            echoerr [MQTT Publisher] Fail to send null message: $MQTT_TOPIC
-        fi
-    else
-        if ! mosquitto_pub $PUB_OPTS $MQTT_AUTH -t "$MQTT_TOPIC" -m "$MQTT_PAYLOAD" $MQTT_RETAIN
-        then
-            echoerr [MQTT Publisher] Fail to send message: $MQTT_TOPIC
-        fi
+    # echoerr [mqtt-pub] $PUBCMD
+    if ! eval $PUBCMD
+    then
+        echoerr [MQTT Publisher] Fail to execute command $PUBCMD
     fi
 done

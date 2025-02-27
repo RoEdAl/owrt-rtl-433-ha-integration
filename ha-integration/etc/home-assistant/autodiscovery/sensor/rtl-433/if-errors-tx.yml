@@ -1,0 +1,9 @@
+name: Transmit errors
+device:
+  name: RTL-433
+state_topic: collectd/owrt-rtl433/netlink-br-lan/if_errors
+value_template: |-                        
+  {% set v = value.rstrip('\x00').split(':') %}
+  {{ v[1] | int }}
+state_class: total_increasing
+icon: mdi:counter

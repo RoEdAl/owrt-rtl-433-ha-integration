@@ -1,0 +1,7 @@
+device:
+  name: Roman's Bedroom at Window
+device_class: timestamp
+state_topic: rtl_433/sensor/Solight-TE44/240/1/timestamp
+value_template: '{{ as_datetime(value) }}'
+entity_category: diagnostic
+expire_after: 400

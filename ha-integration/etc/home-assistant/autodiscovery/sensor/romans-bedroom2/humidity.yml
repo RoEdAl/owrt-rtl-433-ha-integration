@@ -1,0 +1,7 @@
+device:
+  name: Roman's Bedroom
+device_class: humidity
+unit_of_measurement: '%'
+state_topic: rtl_433/sensor/Nexus-TH/147/2/humidity
+expire_after: 135
+state_class: measurement

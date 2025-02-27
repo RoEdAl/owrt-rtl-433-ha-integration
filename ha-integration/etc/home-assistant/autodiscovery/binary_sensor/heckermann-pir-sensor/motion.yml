@@ -1,0 +1,8 @@
+device:
+  name: Heckermann PIR Sensor
+state_topic: rtl_433/motion/Heckermann PIR Sensor 2/state
+json_attributes_topic: rtl_433/motion/Heckermann PIR Sensor 2/attributes
+payload_on: 'on'
+payload_off: 'off'
+off_delay: 30
+device_class: motion

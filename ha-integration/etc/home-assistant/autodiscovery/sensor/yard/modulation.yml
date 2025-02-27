@@ -1,0 +1,7 @@
+name: Modulation
+device:
+  name: Yard
+entity_category: diagnostic
+state_topic: rtl_433/sensor/Vauno-EN8822C/235/1/modulation
+expire_after: 180
+icon: mdi:square-wave

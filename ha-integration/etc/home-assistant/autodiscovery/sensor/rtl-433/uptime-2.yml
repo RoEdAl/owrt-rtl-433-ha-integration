@@ -1,0 +1,9 @@
+device_class: duration
+unit_of_measurement: s
+name: Uptime
+device:
+  name: RTL-433
+state_topic: collectd/owrt-rtl433/uptime/uptime    
+value_template: |-                        
+  {% set v = value.rstrip('\x00').split(':') %}
+  {{ v[1] | int }}

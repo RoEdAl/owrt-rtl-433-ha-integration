@@ -1,0 +1,22 @@
+("rtl_433_${OBJECT_ID}" | envsubst) as $d |
+.object_id = $d |
+.unique_id = $d |
+.device.identifiers = [$d] |
+.origin = {
+  "name": "rtl_433",
+  "support_url": "http://triq.org/rtl_433"
+} |
+.availability = [
+  {
+    "topic": "$SYS/broker/connection/owrt-rtl433/state",
+    "payload_available": "1",
+    "payload_not_available": "0"
+  }
+] |
+
+
+{
+  "topic": ("homeassistant/${COMPONENT}/rtl_433/${OBJECT_ID}/config" | envsubst),
+  "payload": .,
+  "retain": true
+}

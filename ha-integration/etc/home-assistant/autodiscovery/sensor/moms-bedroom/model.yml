@@ -1,0 +1,6 @@
+name: Model
+device:
+  name: Mom's Bedroom
+entity_category: diagnostic
+state_topic: rtl_433/sensor/LaCrosse-TX29IT/2/model
+expire_after: 120

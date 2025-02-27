@@ -1,0 +1,9 @@
+name: Freq 1
+device:
+  name: Mom's Bedroom
+device_class: frequency
+entity_category: diagnostic
+state_topic: rtl_433/sensor/LaCrosse-TX29IT/2/freq1
+unit_of_measurement: MHz
+expire_after: 120
+state_class: measurement

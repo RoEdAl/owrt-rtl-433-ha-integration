@@ -1,0 +1,14 @@
+device:
+  name: Secondary Doorbell
+state_topic: rtl_433/kinetic/doorbell-secondary/event
+value_template: |-
+  {% if has_value(entity_id) and state_attr(entity_id,'timestamp') is not none %}
+    {% set d = value_json['timestamp'] - state_attr(entity_id,'timestamp') %}
+  {% else %}
+    {% set d = 10 %}
+  {% endif %}
+  {{ dict(value_json, event_type='hold' if d < 0.5 else 'press') | to_json }}
+event_types:
+- 'press'
+- 'hold'
+device_class: doorbell

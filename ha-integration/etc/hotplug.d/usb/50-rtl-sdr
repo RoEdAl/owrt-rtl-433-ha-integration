@@ -1,15 +1,11 @@
 #
-# System group plugdev must be created.
+#  idVendor           0x0bda 
+#  idProduct          0x2838 
+#  bcdDevice            1.00
 #
-# My RTL-SDR dongles:
-#
-# idVendor           0x0bda 
-# idProduct          0x2838 
-# bcdDevice            1.00
-#
-# idVendor           0x1d19 
-# idProduct          0x1101 
-# bcdDevice            1.00
+#  idVendor           0x1d19 
+#  idProduct          0x1101 
+#  bcdDevice            1.00
 #
 
 [ "$PRODUCT" = 'bda/2838/100' -o "$PRODUCT" = '1d19/1101/100' ] || exit 0

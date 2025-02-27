@@ -1,0 +1,4 @@
+rtl-00000100.conf -> ../../usr/lib/rtl-433/rtl-866.conf
+rtl-00000101.conf -> ../../usr/lib/rtl-433/rtl-433.conf
+rtl-00000991.conf -> ../../usr/lib/rtl-433/rtl-866.conf
+

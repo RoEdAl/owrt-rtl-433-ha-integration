@@ -1,0 +1,5 @@
+name: B
+state_topic: rtl_433/remote/ORNO Remote/B/state
+device:
+  name: ORNO Remote
+device_class: plug

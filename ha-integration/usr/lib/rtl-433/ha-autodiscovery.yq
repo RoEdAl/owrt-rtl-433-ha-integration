@@ -1,12 +1,12 @@
-  .object_id = strenv(OBJECT_ID)
-| .unique_id = ("rtl_433_${COMPONENT}_${OBJECT_ID}" | envsubst) 
-| .device.identifiers = ["rtl_433${COMPONENT}${GROUP_ID:=$OBJECT_ID}" | envsubst]
-| .origin = {
+.object_id = strenv(OBJECT_ID) |
+.unique_id = ("rtl_433_${COMPONENT}_${OBJECT_ID}" | envsubst) |
+.device.identifiers = ["rtl_433${COMPONENT}${GROUP_ID:=$OBJECT_ID}" | envsubst] |
+.origin = {
   "name": "rtl_433",
   "support_url": "http://triq.org/rtl_433"
-}
+} |
 
-| {
+{
   "topic": ("homeassistant/$COMPONENT/rtl_433/$OBJECT_ID/config" | envsubst),
   "payload": .,
   "retain": true

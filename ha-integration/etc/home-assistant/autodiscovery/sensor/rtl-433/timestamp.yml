@@ -1,0 +1,9 @@
+device:
+  name: RTL-433
+device_class: timestamp
+state_topic: collectd/owrt-rtl433/uptime/uptime
+value_template: |-
+  {% set v = value.rstrip('\x00').split(':') %}
+  {{ v[0] | as_datetime }}
+entity_category: diagnostic
+

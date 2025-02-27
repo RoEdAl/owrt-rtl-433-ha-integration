@@ -1,7 +1,0 @@
-device:
-  name: Primary Doorbell
-state_topic: rtl_433/kinetic/ORNO Remote Doorbell Button/bbd72e8/state
-value_template: "{{ 'ON' if is_state(entity_id,'on') else value }}"
-json_attributes_topic: rtl_433/kinetic/ORNO Remote Doorbell Button/bbd72e8/attributes
-off_delay: 3
-device_class: running

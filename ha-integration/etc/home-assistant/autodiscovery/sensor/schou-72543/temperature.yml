@@ -1,0 +1,7 @@
+device_class: temperature
+device:
+  name: Schou 72543
+state_topic: rtl_433/sensor/Schou-72543/8087/temperature
+unit_of_measurement: "°C"
+state_class: measurement
+expire_after: 300

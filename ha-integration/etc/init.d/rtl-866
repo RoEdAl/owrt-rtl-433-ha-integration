@@ -6,5 +6,6 @@ USE_PROCD=1
 . /usr/lib/rtl-433/svc.sh
 
 start_service() {
-	start_rtl_433_service 00000100 866
+#	start_rtl_433_service 00000991
+	start_rtl_433_service 00000100
 }

@@ -1,0 +1,7 @@
+device_class: temperature
+device:
+  name: Kitchen
+state_topic: "rtl_433/sensor/LaCrosse-TX29IT/34/temperature"
+unit_of_measurement: "°C"
+expire_after: 120
+state_class: measurement

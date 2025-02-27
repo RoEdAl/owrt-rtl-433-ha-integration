@@ -1,0 +1,9 @@
+name: Noise
+device:
+  name: Roman's Bedroom at Window
+device_class: signal_strength
+entity_category: diagnostic
+state_topic: rtl_433/sensor/Solight-TE44/240/1/noise
+unit_of_measurement: dB
+expire_after: 400
+state_class: measurement

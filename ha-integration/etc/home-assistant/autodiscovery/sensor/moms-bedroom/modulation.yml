@@ -1,0 +1,7 @@
+name: Modulation
+device:
+  name: Mom's Bedroom
+entity_category: diagnostic
+state_topic: rtl_433/sensor/LaCrosse-TX29IT/2/modulation
+expire_after: 120
+icon: mdi:square-wave
